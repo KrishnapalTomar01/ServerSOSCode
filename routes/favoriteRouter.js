@@ -67,6 +67,30 @@ favoriteRouter.route('/')
 
 favoriteRouter.route('/:dishId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.cors, authenticate.verifyUser, (req,res,next) => {
+    Favorites.findOne({user: req.user._id})
+    .then((favorites) => {
+        if (!favorites) {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            return res.json({"exists": false, "favorites": favorites});
+        }
+        else {
+            if (favorites.dishes.indexOf(req.params.dishId) < 0) {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                return res.json({"exists": false, "favorites": favorites});
+            }
+            else {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                return res.json({"exists": true, "favorites": favorites});
+            }
+        }
+
+    }, (err) => next(err))
+    .catch((err) => next(err))
+})
 .post(cors.corsWithOptions, authenticate.verifyUser , (req,res,next) => {
     Favorites.findOne({"user":req.user._id})
     .then((favorites)=>{
@@ -107,11 +131,18 @@ favoriteRouter.route('/:dishId')
             if(favorites.dishes.indexOf(req.params.dishId)!=-1){
                 var index=favorites.dishes.indexOf(req.params.dishId);
                 favorites.dishes.splice(index,1);
-                favorites.save().then((favorite) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(favorite);                
-                },(err)=>next(err));      
+                favorite.save()
+                .then((favorite) => {
+                    Favorites.findById(favorite._id)
+                    .populate('user')
+                    .populate('dishes')
+                    .then((favorite) => {
+                        console.log('Favorite Dish Deleted!', favorite);
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(favorite);
+                    })
+                })      
             }
             else{
                 err = new Error('Favorite ' + req.params.dishId + ' not found');
