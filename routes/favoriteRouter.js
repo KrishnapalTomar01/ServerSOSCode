@@ -131,7 +131,7 @@ favoriteRouter.route('/:dishId')
             if(favorites.dishes.indexOf(req.params.dishId)!=-1){
                 var index=favorites.dishes.indexOf(req.params.dishId);
                 favorites.dishes.splice(index,1);
-                favorite.save()
+                favorites.save()
                 .then((favorite) => {
                     Favorites.findById(favorite._id)
                     .populate('user')
