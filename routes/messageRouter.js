@@ -26,36 +26,7 @@ const messageRouter = express.Router();
 const cors = require('./cors');
 
 messageRouter.use(bodyParser.json());
-/*function displayLocation(lat,long){
-    this.geocoder = new google.maps.Geocoder();
-    var latlng = new google.maps.LatLng(lat, long);
 
-    this.geocoder.geocode(
-        {'latLng': latlng}, 
-        function(results, status) {
-            if (status == google.maps.GeocoderStatus.OK) {
-                if (results[0]) {
-                    var add= results[0].formatted_address ;
-                    var  value=add.split(",");
-
-                    var count=value.length;
-                    var country=value[count-1];
-                    state=value[count-2];
-                    city=value[count-3];
-                    console.log("city name is: " +city+" country: "+country+" state: "+state);
-                    console.log("add= "+add);
-                }
-                else  {
-                    console.log("address not found");
-                }
-            }
-            else {
-                console.log("Geocoder failed due to: " + status);
-            }
-        }
-    );
-   }
-*/
 messageRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.cors , (req,res,next) => {
@@ -71,16 +42,8 @@ messageRouter.route('/')
     Messages.create(req.body)
     .then((message) => {
         console.log('Message Created ',message);
-        /*displayLocation(message.latitude,message.longitude);
-        
-        }*/
-        geocoder.reverse({lat:message.latitude, lon:message.longitude}, (err, res)=> {
-            if(err){
-                err = new Error('Geocoder error');
-                err.status = 404;
-                return next(err);
-            }
-            else{
+        /*geocoder.reverse({lat:message.latitude, lon:message.longitude})
+          .then((res)=> {
             var str=res[0].formattedAddress;
             var value=str.split(",");
             var count=value.length;
@@ -88,29 +51,28 @@ messageRouter.route('/')
             state=value[count-2];
             city=value[count-3];
             console.log("city name is: " +city+" country: "+country+" state: "+state);
+           })
+        .catch((err) =>{
+         console.log(err);
+        });*/
+        User.findOne({'city':message.city}).
+        then((data)=>{
+            if(data!=null){
+            const str='Save me: Name- '+message.name+'\nDisaster type- '+message.disasterType+'\nPhone- '+message.phone+'\nLocation- http://maps.google.com/maps?q='+message.latitude+','+message.longitude;
+            console.log("send msg: "+str+' to- '+data.phone);
+            console.log("data: "+data);
             }
-          });
-        var cursor=User.find({'city':city}).cursor();
-        if(cursor!=null){
-          cursor.on('data',(doc)=>{
-              /*const str='Save me: Name- '+message.name+'\nDisaster type- '+message.disasterType+'\nPhone- '+message.phone+'\nLocation- http://maps.google.com/maps?q='+message.latitude+','+message.longitude;
-              nexmo.message.sendSms('SOS application', data.phone, str);*/
-              console.log("send msg: "+str);
-           });
-          }
-        else {
-            var state=User.find({'state':state}).cursor();
-              state.on('data',(doc)=>{
-                  /*const str='Save me: Name- '+message.name+'\nDisaster type- '+message.disasterType+'\nPhone- '+message.phone+'\nLocation- http://maps.google.com/maps?q='+message.latitude+','+message.longitude;
-                  nexmo.message.sendSms('SOS application', data.phone, str);*/
-                  console.log("send msg: "+str);
-            });
+            else{
+                User.findOne({'state':message.state}).then((msg)=>{
+                    const str='Save me: Name- '+message.name+'\nDisaster type- '+message.disasterType+'\nPhone- '+message.phone+'\nLocation- http://maps.google.com/maps?q='+message.latitude+','+message.longitude;
+                    console.log("send msg: "+str+' to- '+msg.phone);
+                    /*nexmo.message.sendSms('SOS application', data.phone, str);*/
+                });
+            }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(message);
-        }
-        /*nexmo.message.sendSms('sos Application',message.phone,'Recieved sos');*/
-
+        });
     }, (err) => next(err))
     .catch((err) => next(err));
 })

@@ -20,6 +20,14 @@ var messageSchema = new Schema({
     longitude: {
         type: Number,
         required: true
+    },
+    city:{
+        type:String,
+        default:''
+    },
+    state:{
+        type:String,
+        default:''
     }
 }, {
     timestamps: true
