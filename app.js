@@ -7,6 +7,7 @@ var session = require('express-session');
 var FileStore = require('session-file-store')(session);
 var passport = require('passport');
 var authenticate = require('./authenticate');
+const Nexmo = require('nexmo');
 var config = require('./config');
 
 var indexRouter = require('./routes/index');
@@ -16,6 +17,8 @@ var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
 const uploadRouter = require('./routes/uploadRouter');
 const favoriteRouter= require('./routes/favoriteRouter');
+const messageRouter=require('./routes/messageRouter');
+const postRouter=require('./routes/postRouter');
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -24,6 +27,7 @@ const Dishes = require('./models/dishes');
 const Promotions=require('./models/promotions');
 const Leaders= require('./models/leaders');
 const Favorites=require('./models/favorite');
+const Messages=require('./models/message');
 
 // Connection URL
 const url = config.mongoUrl;
@@ -67,6 +71,8 @@ app.use('/promotions',promoRouter);
 app.use('/leaders',leaderRouter);
 app.use('/imageUpload',uploadRouter);
 app.use('/favorites',favoriteRouter);
+app.use('/messages',messageRouter);
+app.use('/addpost',postRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

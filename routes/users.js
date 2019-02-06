@@ -27,18 +27,26 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
     if(err) {
       res.statusCode = 500;
       res.setHeader('Content-Type', 'application/json');
-      res.json({err: err});
+      res.json({err: 'Username already exist'});
     }
     else {
-      if (req.body.firstname)
-        user.firstname = req.body.firstname;
-      if (req.body.lastname)
-        user.lastname = req.body.lastname;
+      if (req.body.name)
+        user.name = req.body.name;
+      if (req.body.phone)
+        user.phone = req.body.phone;
+      if (req.body.email)
+        user.email = req.body.email;
+      if (req.body.address)
+        user.address = req.body.address;
+      if (req.body.city)
+        user.city = req.body.city;
+      if(req.body.state)
+        user.state= req.body.state;
       user.save((err, user) => {
         if (err) {
           res.statusCode = 500;
           res.setHeader('Content-Type', 'application/json');
-          res.json({err: err});
+          res.json({err: 'Username already exist'});
           return ;
         }
         passport.authenticate('local')(req, res, () => {
