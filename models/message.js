@@ -28,6 +28,14 @@ var messageSchema = new Schema({
     state:{
         type:String,
         default:''
+    },
+    rescuer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    rescue:{
+        type:Boolean,
+        default:false
     }
 }, {
     timestamps: true

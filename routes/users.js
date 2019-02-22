@@ -42,6 +42,10 @@ router.post('/signup', cors.corsWithOptions, (req, res, next) => {
         user.city = req.body.city;
       if(req.body.state)
         user.state= req.body.state;
+      if(req.body.latitude)
+        user.latitude=req.body.latitude;
+      if(req.body.longitude)
+        user.longitude=req.body.longitude;
       user.save((err, user) => {
         if (err) {
           res.statusCode = 500;

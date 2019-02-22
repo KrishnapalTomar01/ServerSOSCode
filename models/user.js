@@ -27,6 +27,14 @@ var User = new Schema({
         type:String,
         default:''
     },
+    latitude: {
+        type: Number,
+        default:''
+    },
+    longitude: {
+        type: Number,
+        default:''
+    },
     facebookId: String,
     admin:   {
         type: Boolean,
