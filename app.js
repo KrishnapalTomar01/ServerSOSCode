@@ -20,6 +20,7 @@ const favoriteRouter= require('./routes/favoriteRouter');
 const messageRouter=require('./routes/messageRouter');
 const postRouter=require('./routes/postRouter');
 const notificationRouter=require('./routes/notificationRouter');
+const statisticsRouter=require('./routes/statisticsRouter');
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -75,6 +76,7 @@ app.use('/favorites',favoriteRouter);
 app.use('/messages',messageRouter);
 app.use('/addpost',postRouter);
 app.use('/notifications',notificationRouter);
+app.use('/statistics',statisticsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

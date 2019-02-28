@@ -80,6 +80,8 @@ messageRouter.route('/')
                 }
             }
             req.body.rescuer=users[ind]._id;
+            var state=req.body.state;
+            req.body.state=state.replace(/[0-9]/g,'');
             Messages.create(req.body)
              .then((message) => {
                console.log('Message Created ',message);
