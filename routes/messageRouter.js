@@ -3,6 +3,10 @@ const bodyParser = require('body-parser');
 var User = require('../models/user');
 var authenticate = require('../authenticate');
 const mongoose = require('mongoose');
+const accountSid = 'ACc80e35bcddbab3e35e1b11ed5ef23b67';
+const authToken = 'b5f3323b6886e5cec1f1c966006ea42e';
+const client = require('twilio')(accountSid, authToken);
+
 const Nexmo = require('nexmo');
 const nexmo = new Nexmo({
   apiKey: 'd2a96276',
@@ -87,6 +91,14 @@ messageRouter.route('/')
                console.log('Message Created ',message);
                const str='Save me: Name- '+message.name+'\nDisaster type- '+message.disasterType+'\nPhone- '+message.phone+'\nLocation- http://maps.google.com/maps?q='+message.latitude+','+message.longitude;
                console.log("send msg: "+str+' to- '+users[ind].phone);
+               var phone=users[ind].phone;
+               client.messages
+                .create({
+                    body: str,
+                    from: '+17542197883',
+                    to: '+91'+phone
+                })
+                .then(smessage => console.log(smessage.sid));
                console.log("User= "+users[ind]);
                res.statusCode = 200;
                res.setHeader('Content-Type', 'application/json');
