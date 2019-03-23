@@ -21,6 +21,7 @@ const messageRouter=require('./routes/messageRouter');
 const postRouter=require('./routes/postRouter');
 const notificationRouter=require('./routes/notificationRouter');
 const statisticsRouter=require('./routes/statisticsRouter');
+const feedbackRouter=require('./routes/feedbackRouter');
 
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
@@ -77,6 +78,7 @@ app.use('/messages',messageRouter);
 app.use('/addpost',postRouter);
 app.use('/notifications',notificationRouter);
 app.use('/statistics',statisticsRouter);
+app.use('/feedback',feedbackRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
